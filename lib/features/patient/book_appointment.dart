@@ -37,14 +37,18 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
   }
 
   Future<void> _fetchHospitals() async {
-    final snapshot = await FirebaseFirestore.instance
-        .collection('users')
-        .where('role', whereIn: ['hospitalAdmin', 'hospital_admin'])
-        .where('status', isEqualTo: 'approved')
-        .get();
-    setState(() {
-      _hospitals = snapshot.docs;
-    });
+    try {
+      final snapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .where('role', whereIn: ['hospitalAdmin', 'hospital_admin'])
+          .where('status', isEqualTo: 'approved')
+          .get();
+      setState(() {
+        _hospitals = snapshot.docs;
+      });
+    } catch (e) {
+      debugPrint("Error fetching hospitals: $e");
+    }
   }
 
   Future<void> _fetchDoctors() async {

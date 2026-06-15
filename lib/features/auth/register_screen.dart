@@ -38,15 +38,19 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   }
 
   Future<void> _fetchHospitals() async {
-    final snapshot = await FirebaseFirestore.instance
-        .collection('users')
-        .where('role', whereIn: [UserRole.hospitalAdmin.name, 'hospital_admin'])
-        .where('status', isEqualTo: 'approved')
-        .get();
-    if (mounted) {
-      setState(() {
-        _hospitals = snapshot.docs;
-      });
+    try {
+      final snapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .where('role', whereIn: [UserRole.hospitalAdmin.name, 'hospital_admin'])
+          .where('status', isEqualTo: 'approved')
+          .get();
+      if (mounted) {
+        setState(() {
+          _hospitals = snapshot.docs;
+        });
+      }
+    } catch (e) {
+      debugPrint("Error fetching hospitals: $e");
     }
   }
 
@@ -196,6 +200,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
               if (isStaff) ...[
                 DropdownButtonFormField<String>(
+                  isExpanded: true,
                   decoration: const InputDecoration(labelText: 'Location', border: OutlineInputBorder()),
                   value: _selectedCity,
                   items: cities.map((city) => DropdownMenuItem(value: city, child: Text(city))).toList(),
@@ -208,12 +213,13 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 ),
                 const SizedBox(height: 16),
                 DropdownButtonFormField<String>(
+                  isExpanded: true,
                   decoration: const InputDecoration(labelText: 'Hospital', border: OutlineInputBorder()),
                   value: _selectedHospitalId,
                   items: _selectedCity == null
                       ? []
                       : _hospitals
-                          .where((doc) => (doc.data() as Map<String, dynamic>)['city'] == _selectedCity)
+                          .where((doc) => (doc.data() as Map<String, dynamic>)['city']?.toString() == _selectedCity)
                           .map((doc) {
                             final data = doc.data() as Map<String, dynamic>;
                             final hospitalName = data['hospitalName'] ?? 'Unknown';
@@ -241,6 +247,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   ),
                   const SizedBox(height: 16),
                   DropdownButtonFormField<String>(
+                    isExpanded: true,
                     decoration: const InputDecoration(labelText: 'Specialization', border: OutlineInputBorder()),
                     value: _selectedSpecialization,
                     items: AppConstants.specializations.map((spec) => DropdownMenuItem(value: spec, child: Text(spec))).toList(),

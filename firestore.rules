@@ -8,6 +8,8 @@ service cloud.firestore {
       allow read, update: if request.auth != null && 
         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'hospital_admin' &&
         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.hospitalId == resource.data.hospitalId;
+      // 3. Allow reading approved hospital admins (needed for registration & booking dropdowns)
+      allow read: if resource.data.role in ['hospitalAdmin', 'hospital_admin'] && resource.data.status == 'approved';
     }
     
     match /adminRequests/{requestId} {

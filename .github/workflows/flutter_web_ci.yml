@@ -1,0 +1,60 @@
+name: Flutter Web CI/CD & Selenium Tests
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build_test_deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: Install Flutter Dependencies
+        run: flutter pub get
+
+      - name: Build Flutter Web
+        # Base href is set to the repository name for GitHub Pages routing
+        run: flutter build web --release --base-href "/CareFlow-Flutter/"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install Selenium Dependencies
+        working-directory: ./selenium_tests
+        run: npm install
+
+      - name: Serve Web Build locally for E2E Tests
+        run: |
+          npx serve -s build/web -p 50000 &
+          sleep 5
+
+      - name: Run Selenium E2E Tests
+        working-directory: ./selenium_tests
+        env:
+          CI: true
+        run: node test_e2e.js
+
+      - name: Upload Test Report
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: selenium-test-report
+          path: selenium_tests/*.xlsx
+
+      - name: Deploy to GitHub Pages
+        if: success()
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build/web

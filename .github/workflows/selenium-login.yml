@@ -1,4 +1,4 @@
-name: Flutter Web CI/CD & Selenium Tests
+name: selenium-login.yml
 
 on:
   push:
@@ -6,9 +6,9 @@ on:
       - main
 
 jobs:
-  build_test_deploy:
+  selenium_tests:
+    name: Selenium E2E Web + API Tests
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -22,7 +22,6 @@ jobs:
         run: flutter pub get
 
       - name: Build Flutter Web
-        # Base href is set to the repository name for GitHub Pages routing
         run: flutter build web --release --base-href "/CareFlow-Flutter/"
 
       - name: Setup Node.js
@@ -45,6 +44,12 @@ jobs:
           CI: true
         run: node test_e2e.js
 
+      - name: Upload Web Build
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-build
+          path: build/web
+
       - name: Upload Selenium Test Report
         if: always()
         uses: actions/upload-artifact@v4
@@ -58,6 +63,13 @@ jobs:
         with:
           name: selenium-web-screenshots
           path: selenium_tests/screenshots/*
+
+  appium_tests:
+    name: Appium Mobile Tests Dry-Run
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -88,10 +100,52 @@ jobs:
           name: appium-mobile-screenshots
           path: appium_tests/screenshots/*
 
+  deploy_pages:
+    name: Deploy to GitHub Pages
+    needs: selenium_tests
+    runs-on: ubuntu-latest
+    if: success()
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Download Web Build
+        uses: actions/download-artifact@v4
+        with:
+          name: web-build
+          path: ./build/web
+
       - name: Deploy to GitHub Pages
-        if: success()
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./build/web
 
+  generate_report:
+    name: Generate LifeLink Test Report
+    needs: [selenium_tests, appium_tests]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Download Selenium Reports
+        uses: actions/download-artifact@v4
+        with:
+          name: selenium-web-excel-report
+          path: reports/selenium
+        continue-on-error: true
+
+      - name: Download Appium Reports
+        uses: actions/download-artifact@v4
+        with:
+          name: appium-mobile-excel-report
+          path: reports/appium
+        continue-on-error: true
+
+      - name: Generate LifeLink Test Report
+        run: |
+          echo "Generating Combined LifeLink Test Report..."
+          # Placeholder for report generation script
+          # You can add logic here to process the downloaded excel reports from ./reports/

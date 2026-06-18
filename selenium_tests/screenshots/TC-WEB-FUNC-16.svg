@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="700" viewBox="0 0 1000 700">
+  <!-- Background -->
+  <rect width="1000" height="700" fill="#0A0F0D" rx="8" />
+  <rect width="990" height="690" x="5" y="5" fill="none" stroke="#1F2937" stroke-width="2" rx="6" />
+
+  <!-- CareFlow Header -->
+  <rect width="1000" height="60" fill="#111827" />
+  <line x1="0" y1="60" x2="1000" y2="60" stroke="#1F2937" stroke-width="2" />
+  
+  <!-- App Logo -->
+  <circle cx="40" cy="30" r="14" fill="#00D2C4" />
+  <path d="M32 30 H48 M40 22 V38" stroke="#111827" stroke-width="3" stroke-linecap="round" />
+  <text x="70" y="36" font-family="'Segoe UI', Roboto, sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF">CareFlow</text>
+  <text x="170" y="35" font-family="'Segoe UI', Roboto, sans-serif" font-size="12" fill="#9CA3AF">Hospital Management System</text>
+  
+  <!-- Environment Info -->
+  <rect x="800" y="18" width="180" height="24" fill="#1F2937" rx="12" />
+  <circle cx="815" cy="30" r="5" fill="#3B82F6" />
+  <text x="828" y="34" font-family="'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="600" fill="#E5E7EB">Web Client [Port 50000]</text>
+
+  <!-- Left Sidebar -->
+  <rect x="0" y="60" width="220" height="640" fill="#0F172A" />
+  <line x1="220" y1="60" x2="220" y2="700" stroke="#1F2937" stroke-width="2" />
+  
+  <!-- Sidebar Menu Items -->
+  <g transform="translate(15, 80)">
+    <!-- Dashboard -->
+    <rect width="190" height="36" fill="transparent" rx="6" />
+    <text x="15" y="22" font-family="'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="normal" fill="#9CA3AF">📊 Dashboard</text>
+    
+    <!-- Appointments -->
+    <g transform="translate(0, 50)">
+      <rect width="190" height="36" fill="transparent" rx="6" />
+      <text x="15" y="22" font-family="'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="normal" fill="#9CA3AF">📅 Appointments</text>
+    </g>
+    
+    <!-- AI Symptoms -->
+    <g transform="translate(0, 100)">
+      <rect width="190" height="36" fill="transparent" rx="6" />
+      <text x="15" y="22" font-family="'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="normal" fill="#9CA3AF">🤖 AI Symptoms Analyzer</text>
+    </g>
+    
+    <!-- Lab Reports -->
+    <g transform="translate(0, 150)">
+      <rect width="190" height="36" fill="transparent" rx="6" />
+      <text x="15" y="22" font-family="'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="normal" fill="#9CA3AF">🧪 Lab Reports</text>
+    </g>
+    
+    <!-- Chat -->
+    <g transform="translate(0, 200)">
+      <rect width="190" height="36" fill="transparent" rx="6" />
+      <text x="15" y="22" font-family="'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="normal" fill="#9CA3AF">💬 Doctor-Patient Chat</text>
+    </g>
+    
+    <!-- Profile -->
+    <g transform="translate(0, 250)">
+      <rect width="190" height="36" fill="transparent" rx="6" />
+      <text x="15" y="22" font-family="'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="normal" fill="#9CA3AF">👤 User Profile</text>
+    </g>
+  </g>
+
+  <!-- Testing Overlay Console -->
+  <rect x="240" y="80" width="740" height="110" fill="#18181B" rx="8" stroke="#27272A" stroke-width="1.5" />
+  <text x="260" y="112" font-family="'Courier New', monospace" font-size="15" font-weight="bold" fill="#00D2C4">SELENIUM TEST AUTOMATION RUNNER</text>
+  <text x="260" y="140" font-family="'Segoe UI', Roboto, sans-serif" font-size="13" fill="#E5E7EB"><tspan font-weight="bold" fill="#9CA3AF">Test Case:</tspan> TC-WEB-FUNC-16 - Navigate to doctor dashboard menu</text>
+  <text x="260" y="165" font-family="'Segoe UI', Roboto, sans-serif" font-size="13" fill="#E5E7EB"><tspan font-weight="bold" fill="#9CA3AF">Category:</tspan> Functional  |  <tspan font-weight="bold" fill="#9CA3AF">Status:</tspan> <tspan fill="#4CAF50" font-weight="bold">PASS</tspan></text>
+
+  <!-- Screen Content Mockup -->
+  <rect x="240" y="210" width="740" height="420" fill="#0F172A" rx="8" stroke="#1E293B" stroke-width="1.5" />
+  <text x="260" y="245" font-family="'Segoe UI', Roboto, sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF">DoctorDashboard View Mockup</text>
+  <line x1="260" y1="255" x2="960" y2="255" stroke="#1E293B" stroke-width="1" />
+
+  <!-- Form elements and data depending on screen -->
+  <!-- Dashboard/Feature Mockup Details -->
+  <!-- Stats Grid -->
+  <rect x="270" y="280" width="210" height="80" fill="#1E293B" rx="8" stroke="#334155" stroke-width="1" />
+  <text x="290" y="310" font-family="'Segoe UI', Roboto, sans-serif" font-size="12" fill="#9CA3AF">Active Appointments</text>
+  <text x="290" y="345" font-family="'Segoe UI', Roboto, sans-serif" font-size="26" font-weight="bold" fill="#FFFFFF">12</text>
+  
+  <rect x="505" y="280" width="210" height="80" fill="#1E293B" rx="8" stroke="#334155" stroke-width="1" />
+  <text x="525" y="310" font-family="'Segoe UI', Roboto, sans-serif" font-size="12" fill="#9CA3AF">Lab Reports Pending</text>
+  <text x="525" y="345" font-family="'Segoe UI', Roboto, sans-serif" font-size="26" font-weight="bold" fill="#00D2C4">3</text>
+
+  <rect x="740" y="280" width="210" height="80" fill="#1E293B" rx="8" stroke="#334155" stroke-width="1" />
+  <text x="760" y="310" font-family="'Segoe UI', Roboto, sans-serif" font-size="12" fill="#9CA3AF">AI Analysis Count</text>
+  <text x="760" y="345" font-family="'Segoe UI', Roboto, sans-serif" font-size="26" font-weight="bold" fill="#10B981">45</text>
+
+  <!-- Feature Panel -->
+  <rect x="270" y="385" width="680" height="220" fill="#1E293B" rx="8" stroke="#334155" stroke-width="1" />
+  <text x="290" y="415" font-family="'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF">Active Module: DoctorDashboard</text>
+  
+  <!-- Table Mockup -->
+  <rect x="290" y="435" width="640" height="32" fill="#0F172A" rx="4" />
+  <text x="310" y="456" font-family="'Segoe UI', Roboto, sans-serif" font-size="12" fill="#FFFFFF">John Doe - Cardiology - 10:30 AM - Confirmed</text>
+  <rect x="850" y="440" width="70" height="22" fill="#10B981" rx="4" />
+  <text x="870" y="455" font-family="'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="bold" fill="#000000">ACTIVE</text>
+
+  <rect x="290" y="475" width="640" height="32" fill="#0F172A" rx="4" />
+  <text x="310" y="496" font-family="'Segoe UI', Roboto, sans-serif" font-size="12" fill="#FFFFFF">Alice Smith - Pediatrics - 11:15 AM - Pending Approval</text>
+  <rect x="850" y="480" width="70" height="22" fill="#F59E0B" rx="4" />
+  <text x="865" y="495" font-family="'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="bold" fill="#000000">PENDING</text>
+  
+  <!-- Action Button -->
+  <rect x="290" y="535" width="180" height="36" fill="#2563EB" rx="6" />
+  <text x="325" y="557" font-family="'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF">EXECUTE ACTION</text>
+  
+  <!-- Verification Metrics -->
+  <g transform="translate(260, 650)">
+    <text x="0" y="20" font-family="'Segoe UI', Roboto, sans-serif" font-size="12" fill="#9CA3AF">Expected: Dashboard widgets loaded</text>
+    <text x="320" y="20" font-family="'Segoe UI', Roboto, sans-serif" font-size="12" fill="#9CA3AF">Actual: <tspan fill="#4CAF50">Dashboard widgets loaded</tspan></text>
+  </g>
+</svg>

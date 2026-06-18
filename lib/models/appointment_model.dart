@@ -4,6 +4,7 @@ class AppointmentModel {
   final String? id;
   final String patientId;
   final String patientName;
+  final String? patientPhone;
   final String hospitalId;
   final String hospitalName;
   final String city;
@@ -21,6 +22,7 @@ class AppointmentModel {
     this.id,
     required this.patientId,
     required this.patientName,
+    this.patientPhone,
     required this.hospitalId,
     required this.hospitalName,
     required this.city,
@@ -39,6 +41,7 @@ class AppointmentModel {
     return {
       'patientId': patientId,
       'patientName': patientName,
+      'patientPhone': patientPhone,
       'hospitalId': hospitalId,
       'hospitalName': hospitalName,
       'city': city,
@@ -54,11 +57,13 @@ class AppointmentModel {
     };
   }
 
-  factory AppointmentModel.fromMap(Map<String, dynamic> map, String documentId) {
+  factory AppointmentModel.fromMap(
+      Map<String, dynamic> map, String documentId) {
     return AppointmentModel(
       id: documentId,
       patientId: map['patientId'] ?? '',
       patientName: map['patientName'] ?? '',
+      patientPhone: map['patientPhone'],
       hospitalId: map['hospitalId'] ?? '',
       hospitalName: map['hospitalName'] ?? '',
       city: map['city'] ?? '',

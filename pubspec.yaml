@@ -47,10 +47,15 @@ dependencies:
 
   # Local Storage
   shared_preferences: ^2.5.3
+  google_generative_ai: ^0.4.7
+  geolocator: ^14.0.2
+  url_launcher: ^6.3.2
+  responsive_framework: ^1.5.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  firebase_core_platform_interface: ^6.0.3
 
   flutter_lints: ^6.0.0
   flutter_native_splash: ^2.4.7

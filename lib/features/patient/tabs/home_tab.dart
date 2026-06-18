@@ -1,157 +1,232 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../../../core/theme/app_theme.dart';
+import '../../../core/widgets/careflow_appointment_card.dart';
+import '../../../core/widgets/careflow_empty_state.dart';
+import '../../../core/widgets/careflow_loading_view.dart';
+import '../widgets/patient_dashboard_header.dart';
+import '../widgets/patient_search_bar.dart';
+import '../widgets/health_summary_section.dart';
+import '../widgets/quick_action_grid.dart';
+import '../widgets/ai_analyzer_card.dart';
+import '../emergency_module.dart';
 
 class HomeTab extends StatelessWidget {
-  const HomeTab({super.key});
+  final ValueChanged<int>? onNavigateTab;
+  const HomeTab({super.key, this.onNavigateTab});
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("Hello, John", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                    Text("How are you feeling today?", style: TextStyle(color: Colors.grey)),
-                  ],
-                ),
-                CircleAvatar(
-                  radius: 24,
-                  backgroundColor: Colors.teal.shade100,
-                  child: const Icon(Icons.person, color: Colors.teal),
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text("Upcoming Appointment", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                TextButton(onPressed: () {}, child: const Text("See All", style: TextStyle(color: Color(0xFF1D9E75)))),
-              ],
-            ),
-            _buildUpcomingAppointmentCard(),
-            const SizedBox(height: 24),
-            ElevatedButton.icon(
-              icon: const Icon(Icons.add),
-              label: const Text('Book New Appointment'),
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                backgroundColor: const Color(0xFF1D9E75),
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-              ),
-              onPressed: () => context.push('/patient/book_appointment'),
-            ),
-            const SizedBox(height: 32),
-            const Text("Medicine Reminders", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 12),
-            _buildMedicineCard("Paracetamol 500mg", "1-0-1 (After Food)", "2 Days Remaining"),
-            const SizedBox(height: 24),
-            const Text("Recent Lab Reports", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 12),
-            _buildLabReportCard("Complete Blood Count", "12 Oct 2026", "Ready", Colors.green),
-          ],
-        ),
-      ),
-    );
-  }
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      return const Center(
+        child: Text("Not logged in",
+            style: TextStyle(color: AppTheme.textSecondary)),
+      );
+    }
 
-  Widget _buildUpcomingAppointmentCard() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: const Color(0xFF1D9E75),
-        borderRadius: BorderRadius.circular(16),
-      ),
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          FutureBuilder<DocumentSnapshot>(
+              future: FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(user.uid)
+                  .get(),
+              builder: (context, snapshot) {
+                String name = 'Patient';
+                if (snapshot.hasData &&
+                    snapshot.data != null &&
+                    snapshot.data!.data() != null) {
+                  final data = snapshot.data!.data() as Map<String, dynamic>;
+                  name = data['name'] ?? 'Patient';
+                }
+                return PatientDashboardHeader(
+                  patientName: name,
+                  onNotificationTap: () {},
+                );
+              }),
+          const SizedBox(height: 24),
+          const PatientSearchBar(),
+          const SizedBox(height: 24),
+          StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('appointments')
+                  .where('patientId', isEqualTo: user.uid)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                int upcomingCount = 0;
+                int completedCount = 0;
+                if (snapshot.hasData) {
+                  for (var doc in snapshot.data!.docs) {
+                    final data = doc.data() as Map<String, dynamic>;
+                    final status = data['status'];
+                    if (status == 'accepted') upcomingCount++;
+                    if (status == 'completed') completedCount++;
+                  }
+                }
+                return StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('prescriptions')
+                        .where('patientId', isEqualTo: user.uid)
+                        .snapshots(),
+                    builder: (context, medSnapshot) {
+                      int medsCount = 0;
+                      if (medSnapshot.hasData) {
+                        for (var doc in medSnapshot.data!.docs) {
+                          final data = doc.data() as Map<String, dynamic>;
+                          final meds = data['medicines'] as List<dynamic>?;
+                          medsCount += meds?.length ?? 0;
+                        }
+                      }
+                      return StreamBuilder<QuerySnapshot>(
+                          stream: FirebaseFirestore.instance
+                              .collection('lab_reports')
+                              .where('patientId', isEqualTo: user.uid)
+                              .snapshots(),
+                          builder: (context, labSnapshot) {
+                            int reportsCount = labSnapshot.hasData
+                                ? labSnapshot.data!.docs.length
+                                : 0;
+                            return HealthSummarySection(
+                              upcomingAppointments: upcomingCount,
+                              activeMedicines: medsCount,
+                              pendingReports: reportsCount,
+                              completedVisits: completedCount,
+                            );
+                          });
+                    });
+              }),
+          const SizedBox(height: 32),
+          const Text(
+            "Quick Actions",
+            style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: AppTheme.textPrimary),
+          ),
+          const SizedBox(height: 16),
+          QuickActionGrid(
+            actions: [
+              QuickActionItem(
+                title: "Book Appt",
+                icon: Icons.calendar_month_rounded,
+                color: AppTheme.primaryNeon,
+                onTap: () => context.push('/patient/book_appointment'),
+              ),
+              QuickActionItem(
+                title: "My Appts",
+                icon: Icons.list_alt_rounded,
+                color: AppTheme.cyanAccent,
+                onTap: () {
+                  if (onNavigateTab != null) onNavigateTab!(1);
+                },
+              ),
+              QuickActionItem(
+                title: "Medicines",
+                icon: Icons.medication_rounded,
+                color: AppTheme.secondaryGreen,
+                onTap: () {
+                  if (onNavigateTab != null) onNavigateTab!(2);
+                },
+              ),
+              QuickActionItem(
+                title: "AI Analyzer",
+                icon: Icons.psychology_rounded,
+                color: const Color(0xFFB140FF),
+                onTap: () => context.push('/patient/ai_symptoms'),
+              ),
+              QuickActionItem(
+                title: "Lab Reports",
+                icon: Icons.science_rounded,
+                color: AppTheme.warning,
+                onTap: () => context.push('/patient/lab_reports'),
+              ),
+              QuickActionItem(
+                title: "Prescriptions",
+                icon: Icons.receipt_long_rounded,
+                color: Colors.blueAccent,
+                onTap: () {
+                  if (onNavigateTab != null) onNavigateTab!(2);
+                },
+              ),
+              QuickActionItem(
+                title: "Profile",
+                icon: Icons.person_rounded,
+                color: Colors.tealAccent,
+                onTap: () {
+                  if (onNavigateTab != null) onNavigateTab!(4);
+                },
+              ),
+              QuickActionItem(
+                title: "Emergency",
+                icon: Icons.emergency_rounded,
+                color: AppTheme.error,
+                onTap: () => EmergencyModule.showEmergencyOptions(context),
+              ),
+            ],
+          ),
+          const SizedBox(height: 32),
+          AIAnalyzerCard(
+            onTap: () => context.push('/patient/ai_symptoms'),
+          ),
+          const SizedBox(height: 32),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Dr. Sarah Jenkins", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
-                  Text("Cardiology • City General Hospital", style: TextStyle(color: Colors.white70, fontSize: 12)),
-                ],
+              const Text(
+                "Upcoming Appointment",
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: AppTheme.textPrimary),
               ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(color: Colors.white24, borderRadius: BorderRadius.circular(8)),
-                child: const Text("Confirmed", style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold)),
-              )
+              TextButton(
+                onPressed: () {},
+                child: const Text("See All",
+                    style: TextStyle(
+                        color: AppTheme.primaryNeon,
+                        fontWeight: FontWeight.bold)),
+              ),
             ],
           ),
-          const SizedBox(height: 16),
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(color: Colors.white.withOpacity(0.15), borderRadius: BorderRadius.circular(8)),
-            child: const Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Icon(Icons.calendar_today, color: Colors.white, size: 16),
-                    SizedBox(width: 8),
-                    Text("Mon, 14 Oct", style: TextStyle(color: Colors.white)),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Icon(Icons.access_time, color: Colors.white, size: 16),
-                    SizedBox(width: 8),
-                    Text("10:30 AM", style: TextStyle(color: Colors.white)),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Icon(Icons.confirmation_number, color: Colors.white, size: 16),
-                    SizedBox(width: 8),
-                    Text("T-12", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                  ],
-                ),
-              ],
-            ),
-          )
+          const SizedBox(height: 12),
+          StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('appointments')
+                  .where('patientId', isEqualTo: user.uid)
+                  .where('status', isEqualTo: 'accepted')
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CareFlowLoadingView();
+                }
+                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                  return const CareFlowEmptyState(
+                    title: "No upcoming appointments",
+                    message: "You have no scheduled appointments.",
+                    icon: Icons.calendar_today_outlined,
+                  );
+                }
+                final doc = snapshot.data!.docs.first;
+                final data = doc.data() as Map<String, dynamic>;
+                return CareFlowAppointmentCard(
+                  patientName: data['patientName'] ?? 'Unknown',
+                  doctorName: data['doctorName'] ?? 'Unknown Doctor',
+                  department: data['department'] ?? 'General',
+                  date: data['date'] ?? 'Upcoming',
+                  timeSlot: data['slotTime'] ?? 'TBD',
+                  tokenNumber: data['tokenNumber'],
+                  status: data['status'] ?? 'Scheduled',
+                );
+              }),
+          const SizedBox(height: 40),
         ],
       ),
-    );
-  }
-
-  Widget _buildMedicineCard(String name, String dosage, String days) {
-    return ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      tileColor: Colors.teal.shade50,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      leading: const CircleAvatar(backgroundColor: Colors.white, child: Icon(Icons.medication, color: Colors.teal)),
-      title: Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
-      subtitle: Text(dosage),
-      trailing: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        decoration: BoxDecoration(color: Colors.teal.shade100, borderRadius: BorderRadius.circular(12)),
-        child: Text(days, style: const TextStyle(color: Colors.teal, fontWeight: FontWeight.bold, fontSize: 12)),
-      ),
-    );
-  }
-
-  Widget _buildLabReportCard(String name, String date, String status, Color statusColor) {
-    return ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      tileColor: Colors.grey.shade50,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12), side: BorderSide(color: Colors.grey.shade200)),
-      leading: const CircleAvatar(backgroundColor: Color(0xFFEEEDFE), child: Icon(Icons.science, color: Color(0xFF534AB7))),
-      title: Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
-      subtitle: Text(date),
-      trailing: Text(status, style: TextStyle(color: statusColor, fontWeight: FontWeight.bold)),
     );
   }
 }

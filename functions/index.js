@@ -92,10 +92,24 @@ exports.onStaffApproved = functions.firestore
       const payload = {
         notification: {
           title: 'Account Approved!',
-          body: `Your account as a ${after.role} has been approved. You may now log in.`,
+          body: `Your account as a \${after.role} has been approved. You may now log in.`,
         }
       };
-      return admin.messaging().sendToTopic(`user_${uid}`, payload);
+      return admin.messaging().sendToTopic(`user_\${uid}`, payload);
     }
     return null;
+  });
+
+// 7. onEmergencyRequestCreated -> notify hospital emergency staff
+exports.onEmergencyRequestCreated = functions.firestore
+  .document('emergency_requests/{requestId}')
+  .onCreate(async (snap, context) => {
+    const data = snap.data();
+    const payload = {
+      notification: {
+        title: '⚠ EMERGENCY ALERT',
+        body: `Patient requires immediate assistance at location: \${data.location}`,
+      }
+    };
+    return admin.messaging().sendToTopic('emergency_staff', payload);
   });

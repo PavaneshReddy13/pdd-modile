@@ -37,7 +37,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   Widget build(BuildContext context) {
     final chatService = ref.read(chatServiceProvider);
     final currentUserId = FirebaseAuth.instance.currentUser?.uid;
-    if (currentUserId == null) return const Scaffold(body: Center(child: Text('Not logged in')));
+    if (currentUserId == null) {
+      return const Scaffold(body: Center(child: Text('Not logged in')));
+    }
 
     final chatId = chatService.getChatId(currentUserId, widget.otherUserId);
 
@@ -67,17 +69,21 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     final isMe = data['senderId'] == currentUserId;
 
                     return Align(
-                      alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+                      alignment:
+                          isMe ? Alignment.centerRight : Alignment.centerLeft,
                       child: Container(
-                        margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                        margin: const EdgeInsets.symmetric(
+                            vertical: 4, horizontal: 8),
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: isMe ? Colors.blueAccent : Colors.grey.shade300,
+                          color:
+                              isMe ? Colors.blueAccent : Colors.grey.shade300,
                           borderRadius: BorderRadius.circular(16),
                         ),
                         child: Text(
                           data['text'] ?? '',
-                          style: TextStyle(color: isMe ? Colors.white : Colors.black87),
+                          style: TextStyle(
+                              color: isMe ? Colors.white : Colors.black87),
                         ),
                       ),
                     );
@@ -95,7 +101,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     controller: _messageController,
                     decoration: InputDecoration(
                       hintText: 'Type a message...',
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(24)),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(24)),
                     ),
                   ),
                 ),

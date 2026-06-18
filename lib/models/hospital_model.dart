@@ -5,9 +5,15 @@ class HospitalModel {
   final String area;
   final String address;
 
-  HospitalModel({required this.id, required this.name, required this.city, required this.area, required this.address});
+  HospitalModel(
+      {required this.id,
+      required this.name,
+      required this.city,
+      required this.area,
+      required this.address});
 
-  Map<String, dynamic> toMap() => {'id': id, 'name': name, 'city': city, 'area': area, 'address': address};
+  Map<String, dynamic> toMap() =>
+      {'id': id, 'name': name, 'city': city, 'area': area, 'address': address};
 
   factory HospitalModel.fromMap(Map<String, dynamic> map, String id) {
     return HospitalModel(

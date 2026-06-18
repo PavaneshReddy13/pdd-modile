@@ -21,7 +21,11 @@ class ChatService {
     final user = _auth.currentUser;
     if (user == null || text.trim().isEmpty) return;
 
-    await _firestore.collection('chats').doc(chatId).collection('messages').add({
+    await _firestore
+        .collection('chats')
+        .doc(chatId)
+        .collection('messages')
+        .add({
       'senderId': user.uid,
       'text': text.trim(),
       'timestamp': FieldValue.serverTimestamp(),

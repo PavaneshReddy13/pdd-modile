@@ -4,6 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../core/services/auth_service.dart';
+import '../../core/theme/app_theme.dart';
+import '../../core/widgets/careflow_scaffold.dart';
+import '../../core/widgets/careflow_glass_card.dart';
+import '../../core/widgets/careflow_neon_button.dart';
 
 class OtpVerificationScreen extends ConsumerStatefulWidget {
   final String verificationId;
@@ -16,7 +20,8 @@ class OtpVerificationScreen extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<OtpVerificationScreen> createState() => _OtpVerificationScreenState();
+  ConsumerState<OtpVerificationScreen> createState() =>
+      _OtpVerificationScreenState();
 }
 
 class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
@@ -35,6 +40,7 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
   @override
   void dispose() {
     _timer?.cancel();
+    _otpController.dispose();
     super.dispose();
   }
 
@@ -43,7 +49,7 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
       _canResend = false;
       _timerSeconds = 30;
     });
-    
+
     _timer?.cancel();
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_timerSeconds == 0) {
@@ -57,20 +63,14 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
 
   void _resendOTP() async {
     final authService = ref.read(authServiceProvider);
-    
     setState(() => _isLoading = true);
-    
+
     try {
       await authService.sendPhoneOTP(
         widget.phoneNumber,
         codeSent: (newVerificationId, forceResendingToken) {
           if (!mounted) return;
-          setState(() {
-            _isLoading = false;
-            // Note: Ideally we should update the verificationId, but since it's final
-            // we'll just show a success message. In a real app, you might want to 
-            // manage verificationId in the state instead of widget parameters.
-          });
+          setState(() => _isLoading = false);
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('OTP resent successfully')),
           );
@@ -83,9 +83,7 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
             SnackBar(content: Text(e.message ?? 'Verification failed')),
           );
         },
-        verificationCompleted: (PhoneAuthCredential credential) {
-          // Handled in phone login usually, but can be added here if needed
-        },
+        verificationCompleted: (PhoneAuthCredential credential) {},
         codeAutoRetrievalTimeout: (verificationId) {},
       );
     } catch (e) {
@@ -111,13 +109,11 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
 
     try {
       final userCred = await authService.verifyOTP(widget.verificationId, otp);
-      
+
       if (userCred.user != null) {
         final isComplete = await authService.handlePatientPhoneAuthSuccess(
-          userCred.user!, 
-          widget.phoneNumber
-        );
-        
+            userCred.user!, widget.phoneNumber);
+
         if (!mounted) return;
         if (isComplete) {
           context.go('/patient/dashboard');
@@ -133,11 +129,13 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
       } else if (e.code == 'session-expired') {
         message = 'OTP expired. Please resend.';
       }
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(message)),
       );
     } catch (e) {
       setState(() => _isLoading = false);
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(e.toString())),
       );
@@ -146,81 +144,120 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return CareFlowScaffold(
+      useAnimatedBackground: true,
       appBar: AppBar(
         title: const Text('Verify Phone'),
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const Icon(
-                Icons.mark_chat_read_outlined,
-                size: 80,
-                color: Color(0xFF1D9E75),
-              ),
-              const SizedBox(height: 32),
-              const Text(
-                'Enter OTP',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'We have sent a 6-digit code to ${widget.phoneNumber}',
-                style: const TextStyle(color: Colors.black54),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 32),
-              TextField(
-                controller: _otpController,
-                keyboardType: TextInputType.number,
-                maxLength: 6,
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 24, letterSpacing: 8),
-                decoration: const InputDecoration(
-                  hintText: '000000',
-                  border: OutlineInputBorder(),
-                  counterText: '',
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: IgnorePointer(
+              child: Center(
+                child: Text(
+                  "CAREFLOW",
+                  style: TextStyle(
+                    fontSize: 130,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 20,
+                    color: Colors.white.withValues(alpha: 0.02),
+                  ),
                 ),
               ),
-              const SizedBox(height: 32),
-              ElevatedButton(
-                onPressed: _isLoading ? null : _verifyOTP,
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  backgroundColor: const Color(0xFF1D9E75),
-                  foregroundColor: Colors.white,
-                ),
-                child: _isLoading
-                    ? const CircularProgressIndicator(color: Colors.white)
-                    : const Text('Verify', style: TextStyle(fontSize: 16)),
-              ),
-              const SizedBox(height: 24),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text('Didn\'t receive code? '),
-                  if (_canResend)
-                    TextButton(
-                      onPressed: _isLoading ? null : _resendOTP,
-                      child: const Text(
-                        'Resend',
-                        style: TextStyle(color: Color(0xFF1D9E75)),
-                      ),
-                    )
-                  else
-                    Text(
-                      'Resend in ${_timerSeconds}s',
-                      style: const TextStyle(color: Colors.grey),
-                    ),
-                ],
-              ),
-            ],
+            ),
           ),
-        ),
+          Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(24.0),
+              child: Container(
+                constraints: const BoxConstraints(maxWidth: 480),
+                child: CareFlowGlassCard(
+                  borderColor: AppTheme.primaryNeon.withValues(alpha: 0.25),
+                  glowColor: AppTheme.primaryNeon,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const Center(
+                        child: Icon(
+                          Icons.mark_chat_read_outlined,
+                          size: 64,
+                          color: AppTheme.primaryNeon,
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      const Text(
+                        'Enter OTP Code',
+                        style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: AppTheme.textPrimary),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'We have sent a 6-digit code to ${widget.phoneNumber}',
+                        style: const TextStyle(
+                            color: AppTheme.textSecondary, fontSize: 13),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 32),
+                      TextFormField(
+                        controller: _otpController,
+                        keyboardType: TextInputType.number,
+                        maxLength: 6,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                            fontSize: 24,
+                            letterSpacing: 8,
+                            color: AppTheme.textPrimary,
+                            fontWeight: FontWeight.bold),
+                        decoration: const InputDecoration(
+                          hintText: '000000',
+                          counterText: '',
+                        ),
+                      ),
+                      const SizedBox(height: 32),
+                      CareFlowNeonButton(
+                        text: 'Verify OTP',
+                        isLoading: _isLoading,
+                        onPressed: _verifyOTP,
+                        gradientColors: const [
+                          AppTheme.primaryNeon,
+                          AppTheme.cyanAccent
+                        ],
+                      ),
+                      const SizedBox(height: 24),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text('Didn\'t receive code? ',
+                              style: TextStyle(color: AppTheme.textSecondary)),
+                          if (_canResend)
+                            TextButton(
+                              onPressed: _isLoading ? null : _resendOTP,
+                              child: const Text(
+                                'Resend',
+                                style: TextStyle(
+                                    color: AppTheme.primaryNeon,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            )
+                          else
+                            Text(
+                              'Resend in ${_timerSeconds}s',
+                              style: const TextStyle(
+                                  color: AppTheme.textSecondary,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

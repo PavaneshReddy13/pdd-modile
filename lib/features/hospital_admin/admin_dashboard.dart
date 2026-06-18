@@ -52,8 +52,12 @@ class HospitalAdminDashboard extends ConsumerWidget {
           .where('status', isEqualTo: 'pending')
           .snapshots(),
       builder: (context, snapshot) {
-        if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
-        if (snapshot.data!.docs.isEmpty) return const Center(child: Text("No staff approvals pending."));
+        if (!snapshot.hasData) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (snapshot.data!.docs.isEmpty) {
+          return const Center(child: Text("No staff approvals pending."));
+        }
 
         return ListView.builder(
           padding: const EdgeInsets.all(16),
@@ -64,18 +68,21 @@ class HospitalAdminDashboard extends ConsumerWidget {
             return Card(
               color: const Color(0xFFFAEEDA),
               child: ListTile(
-                title: Text(data['name'], style: const TextStyle(fontWeight: FontWeight.bold)),
+                title: Text(data['name'],
+                    style: const TextStyle(fontWeight: FontWeight.bold)),
                 subtitle: Text("Role: ${data['role']} • ${data['email']}"),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     IconButton(
                       icon: const Icon(Icons.close, color: Colors.red),
-                      onPressed: () => doc.reference.update({'status': 'rejected'}),
+                      onPressed: () =>
+                          doc.reference.update({'status': 'rejected'}),
                     ),
                     IconButton(
                       icon: const Icon(Icons.check, color: Colors.green),
-                      onPressed: () => doc.reference.update({'status': 'approved'}),
+                      onPressed: () =>
+                          doc.reference.update({'status': 'approved'}),
                     ),
                   ],
                 ),

@@ -1,11 +1,12 @@
 enum UserRole {
-  patient("Patient"),
-  doctor("Doctor"),
-  hospitalAdmin("Hospital Admin"),
-  receptionist("Receptionist"),
-  labTechnician("Lab Technician"),
-  mainAdmin("Main Admin");
+  patient("Patient", "patient"),
+  doctor("Doctor", "doctor"),
+  hospitalAdmin("Hospital Admin", "hospital_admin"),
+  receptionist("Receptionist", "receptionist"),
+  labTechnician("Lab Technician", "lab_technician"),
+  mainAdmin("Main Admin", "main_admin");
 
   final String title;
-  const UserRole(this.title);
+  final String dbValue;
+  const UserRole(this.title, this.dbValue);
 }

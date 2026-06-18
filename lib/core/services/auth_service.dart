@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -20,14 +21,16 @@ class AuthService {
   })  : _auth = auth,
         _firestore = firestore;
 
-  Future<UserCredential> registerPatient(String name, String email, String phone, String password) async {
-    final userCredential = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+  Future<UserCredential> registerPatient(
+      String name, String email, String phone, String password) async {
+    final userCredential = await _auth.createUserWithEmailAndPassword(
+        email: email, password: password);
     final uid = userCredential.user!.uid;
 
     try {
       await userCredential.user!.sendEmailVerification();
     } catch (e) {
-      print("Error sending email verification: $e");
+      debugPrint("Error sending email verification: $e");
     }
 
     await _firestore.collection('users').doc(uid).set({
@@ -43,21 +46,29 @@ class AuthService {
     return userCredential;
   }
 
-  Future<UserCredential> registerHospitalAdmin(String name, String email, String password, String hospitalName, String address, String city, String area) async {
-    final userCredential = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+  Future<UserCredential> registerHospitalAdmin(
+      String name,
+      String email,
+      String password,
+      String hospitalName,
+      String address,
+      String city,
+      String area) async {
+    final userCredential = await _auth.createUserWithEmailAndPassword(
+        email: email, password: password);
     final uid = userCredential.user!.uid;
 
     try {
       await userCredential.user!.sendEmailVerification();
     } catch (e) {
-      print("Error sending email verification: $e");
+      debugPrint("Error sending email verification: $e");
     }
 
     await _firestore.collection('users').doc(uid).set({
       'uid': uid,
       'name': name,
       'email': email,
-      'role': UserRole.hospitalAdmin.name,
+      'role': UserRole.hospitalAdmin.dbValue,
       'status': 'pending',
       'hospitalName': hospitalName,
       'address': address,
@@ -81,14 +92,22 @@ class AuthService {
     return userCredential;
   }
 
-  Future<UserCredential> registerDoctor(String name, String email, String phone, String password, String hospitalId, String licenseNumber, String specialization) async {
-    final userCredential = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+  Future<UserCredential> registerDoctor(
+      String name,
+      String email,
+      String phone,
+      String password,
+      String hospitalId,
+      String licenseNumber,
+      String specialization) async {
+    final userCredential = await _auth.createUserWithEmailAndPassword(
+        email: email, password: password);
     final uid = userCredential.user!.uid;
 
     try {
       await userCredential.user!.sendEmailVerification();
     } catch (e) {
-      print("Error sending email verification: $e");
+      debugPrint("Error sending email verification: $e");
     }
 
     await _firestore.collection('users').doc(uid).set({
@@ -96,7 +115,7 @@ class AuthService {
       'name': name,
       'email': email,
       'phone': phone,
-      'role': UserRole.doctor.name,
+      'role': UserRole.doctor.dbValue,
       'status': 'pending',
       'hospitalId': hospitalId,
       'licenseNumber': licenseNumber,
@@ -104,10 +123,14 @@ class AuthService {
       'createdAt': FieldValue.serverTimestamp(),
     });
 
-    await _firestore.collection('staffRequests').doc(hospitalId).collection('requests').add({
+    await _firestore
+        .collection('staffRequests')
+        .doc(hospitalId)
+        .collection('requests')
+        .add({
       'uid': uid,
       'name': name,
-      'role': UserRole.doctor.name,
+      'role': UserRole.doctor.dbValue,
       'status': 'pending',
       'createdAt': FieldValue.serverTimestamp(),
     });
@@ -115,14 +138,16 @@ class AuthService {
     return userCredential;
   }
 
-  Future<UserCredential> registerStaff(String name, String email, String phone, String password, String role, String hospitalId) async {
-    final userCredential = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+  Future<UserCredential> registerStaff(String name, String email, String phone,
+      String password, String role, String hospitalId) async {
+    final userCredential = await _auth.createUserWithEmailAndPassword(
+        email: email, password: password);
     final uid = userCredential.user!.uid;
 
     try {
       await userCredential.user!.sendEmailVerification();
     } catch (e) {
-      print("Error sending email verification: $e");
+      debugPrint("Error sending email verification: $e");
     }
 
     await _firestore.collection('users').doc(uid).set({
@@ -136,7 +161,11 @@ class AuthService {
       'createdAt': FieldValue.serverTimestamp(),
     });
 
-    await _firestore.collection('staffRequests').doc(hospitalId).collection('requests').add({
+    await _firestore
+        .collection('staffRequests')
+        .doc(hospitalId)
+        .collection('requests')
+        .add({
       'uid': uid,
       'name': name,
       'role': role,
@@ -147,7 +176,8 @@ class AuthService {
     return userCredential;
   }
 
-  Future<void> sendPhoneOTP(String phoneNumber, {
+  Future<void> sendPhoneOTP(
+    String phoneNumber, {
     required Function(String, int?) codeSent,
     required Function(FirebaseAuthException) verificationFailed,
     required Function(PhoneAuthCredential) verificationCompleted,
@@ -171,7 +201,8 @@ class AuthService {
   }
 
   Future<UserCredential> loginWithEmail(String email, String password) async {
-    return await _auth.signInWithEmailAndPassword(email: email, password: password);
+    return await _auth.signInWithEmailAndPassword(
+        email: email, password: password);
   }
 
   Future<String?> getUserRole(String uid) async {
@@ -193,7 +224,9 @@ class AuthService {
   Future<void> signOut() async {
     await _auth.signOut();
   }
-  Future<bool> handlePatientPhoneAuthSuccess(User user, String phoneNumber) async {
+
+  Future<bool> handlePatientPhoneAuthSuccess(
+      User user, String phoneNumber) async {
     final docRef = _firestore.collection('users').doc(user.uid);
     final doc = await docRef.get();
 
@@ -213,24 +246,26 @@ class AuthService {
     }
   }
 
-  Future<void> completePatientProfile(String uid, String password, Map<String, dynamic> data) async {
+  Future<void> completePatientProfile(
+      String uid, String password, Map<String, dynamic> data) async {
     final user = _auth.currentUser;
     if (user != null) {
       final docRef = _firestore.collection('users').doc(uid);
       final doc = await docRef.get();
       final phone = doc.data()?['phone'] as String?;
-      
+
       if (phone != null) {
-        final email = '${phone.startsWith('+') ? phone : '+$phone'}@careflow.com';
+        final email =
+            '${phone.startsWith('+') ? phone : '+$phone'}@careflow.com';
         try {
-          await user.updateEmail(email);
+          await user.verifyBeforeUpdateEmail(email);
           await user.updatePassword(password);
         } catch (e) {
-          print("Error updating auth details: $e");
+          debugPrint("Error updating auth details: $e");
           // Consider handling or rethrowing depending on strictness
         }
       }
-      
+
       await docRef.update({
         ...data,
         'profileCompleted': true,

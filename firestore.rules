@@ -4,12 +4,21 @@ service cloud.firestore {
     match /users/{userId} {
       // 1. Users read/write their own document
       allow read, write: if request.auth != null && request.auth.uid == userId;
-      // 2. Admins read/update staff in their context
+      
+      // 2. Main Admin can read and write all users
+      allow read, write: if request.auth != null && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'main_admin';
+
+      // 3. Admins read/update staff in their context
       allow read, update: if request.auth != null && 
         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'hospital_admin' &&
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.hospitalId == resource.data.hospitalId;
-      // 3. Allow reading approved hospital admins (needed for registration & booking dropdowns)
+        request.auth.uid == resource.data.hospitalId;
+        
+      // 4. Allow reading approved hospital admins (needed for registration & booking dropdowns)
       allow read: if resource.data.role in ['hospitalAdmin', 'hospital_admin'] && resource.data.status == 'approved';
+      
+      // 5. Allow reading doctors, receptionists, and patients (needed for booking appointments and chat)
+      allow read: if request.auth != null && resource.data.role in ['doctor', 'receptionist', 'patient'];
     }
     
     match /adminRequests/{requestId} {
@@ -19,9 +28,36 @@ service cloud.firestore {
     }
 
     match /staffRequests/{hospitalId}/requests/{requestId} {
-      allow read: if request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'hospital_admin' && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.hospitalId == hospitalId;
+      allow read: if request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'hospital_admin' && request.auth.uid == hospitalId;
       allow create: if request.auth != null && request.resource.data.uid == request.auth.uid;
-      allow update: if request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'hospital_admin' && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.hospitalId == hospitalId;
+      allow update: if request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'hospital_admin' && request.auth.uid == hospitalId;
+    }
+
+    match /appointments/{appointmentId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null && request.resource.data.patientId == request.auth.uid;
+      allow update: if request.auth != null;
+    }
+
+    match /chats/{chatId}/messages/{messageId} {
+      allow read, write: if request.auth != null && chatId.matches('.*' + request.auth.uid + '.*');
+    }
+
+    match /prescriptions/{prescriptionId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null;
+    }
+
+    match /medicine_reminders/{reminderId} {
+      allow read, write: if request.auth != null;
+    }
+
+    match /lab_reports/{reportId} {
+      allow read, write: if request.auth != null;
+    }
+
+    match /emergency_requests/{requestId} {
+      allow read, write: if request.auth != null;
     }
 
     // Default deny for everything else

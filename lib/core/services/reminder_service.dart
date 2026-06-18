@@ -4,13 +4,15 @@ import 'package:timezone/timezone.dart' as tz;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/prescription_model.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter/foundation.dart';
 
 final reminderServiceProvider = Provider<ReminderService>((ref) {
   return ReminderService();
 });
 
 class ReminderService {
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
 
   ReminderService() {
     _initializeNotifications();
@@ -18,16 +20,20 @@ class ReminderService {
 
   void _initializeNotifications() async {
     tz_data.initializeTimeZones();
-    const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
-    const DarwinInitializationSettings initializationSettingsIOS = DarwinInitializationSettings();
-    const InitializationSettings initializationSettings = InitializationSettings(
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+    const DarwinInitializationSettings initializationSettingsIOS =
+        DarwinInitializationSettings();
+    const InitializationSettings initializationSettings =
+        InitializationSettings(
       android: initializationSettingsAndroid,
       iOS: initializationSettingsIOS,
     );
     await flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
 
-  Future<void> scheduleAllReminders(List<PrescriptionModel> prescriptions) async {
+  Future<void> scheduleAllReminders(
+      List<PrescriptionModel> prescriptions) async {
     await cancelAllReminders();
 
     int notificationId = 0;
@@ -35,33 +41,49 @@ class ReminderService {
     for (var prescription in prescriptions) {
       for (var rawMed in prescription.medicines) {
         final med = rawMed as Map<String, dynamic>;
-        final String name = med['name'] ?? 'Medicine';
+        final String name = med['medicineName'] ?? med['name'] ?? 'Medicine';
         final String dosage = med['dosage'] ?? '';
-        final List<dynamic> times = med['times'] ?? []; // Expected: ["08:00", "20:00"]
+        final List<dynamic> times =
+            med['times'] ?? []; // Expected: ["08:00 AM", "08:00 PM"]
 
         for (var timeStr in times) {
           try {
-            final parsedTime = DateFormat("HH:mm").parse(timeStr.toString());
+            DateTime parsedTime;
+            try {
+              parsedTime =
+                  DateFormat("hh:mm a").parse(timeStr.toString().trim());
+            } catch (_) {
+              parsedTime = DateFormat("HH:mm").parse(timeStr.toString().trim());
+            }
+
             await _scheduleDailyNotification(
               id: notificationId++,
               title: "💊 Time for your Medicine",
               body: "Please take $name - $dosage.",
-              time: tz.TZDateTime.local(2026, 1, 1, parsedTime.hour, parsedTime.minute),
+              time: tz.TZDateTime.local(
+                  2026, 1, 1, parsedTime.hour, parsedTime.minute),
             );
           } catch (e) {
             // parsing logic skips mapping if standard time string fails
+            debugPrint('Failed to parse time: \$timeStr');
           }
         }
       }
     }
   }
 
-  Future<void> _scheduleDailyNotification({required int id, required String title, required String body, required tz.TZDateTime time}) async {
+  Future<void> _scheduleDailyNotification(
+      {required int id,
+      required String title,
+      required String body,
+      required tz.TZDateTime time}) async {
     final now = tz.TZDateTime.now(tz.local);
-    var scheduledDate = tz.TZDateTime(tz.local, now.year, now.month, now.day, time.hour, time.minute);
-    
+    var scheduledDate = tz.TZDateTime(
+        tz.local, now.year, now.month, now.day, time.hour, time.minute);
+
     if (scheduledDate.isBefore(now)) {
-      scheduledDate = scheduledDate.add(const Duration(days: 1)); // schedule for next occurrence naturally
+      scheduledDate = scheduledDate.add(
+          const Duration(days: 1)); // schedule for next occurrence naturally
     }
 
     await flutterLocalNotificationsPlugin.zonedSchedule(

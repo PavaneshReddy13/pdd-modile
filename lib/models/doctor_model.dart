@@ -5,9 +5,20 @@ class DoctorModel {
   final String hospitalId;
   final double rating;
 
-  DoctorModel({required this.id, required this.name, required this.specialty, required this.hospitalId, this.rating = 0.0});
+  DoctorModel(
+      {required this.id,
+      required this.name,
+      required this.specialty,
+      required this.hospitalId,
+      this.rating = 0.0});
 
-  Map<String, dynamic> toMap() => {'id': id, 'name': name, 'specialty': specialty, 'hospitalId': hospitalId, 'rating': rating};
+  Map<String, dynamic> toMap() => {
+        'id': id,
+        'name': name,
+        'specialty': specialty,
+        'hospitalId': hospitalId,
+        'rating': rating
+      };
 
   factory DoctorModel.fromMap(Map<String, dynamic> map, String id) {
     return DoctorModel(

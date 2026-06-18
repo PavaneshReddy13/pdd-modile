@@ -6,47 +6,79 @@ import 'package:go_router/go_router.dart';
 class ChatListTab extends StatelessWidget {
   const ChatListTab({super.key});
 
+  Future<List<DocumentSnapshot>> _getUsersToChatWith(String uid) async {
+    final userDoc =
+        await FirebaseFirestore.instance.collection('users').doc(uid).get();
+    final role = userDoc.data()?['role'] as String?;
+
+    if (role == 'patient') {
+      final snapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .where('role', whereIn: ['doctor', 'receptionist'])
+          .where('status', isEqualTo: 'approved')
+          .get();
+      return snapshot.docs;
+    } else {
+      // Doctor or Receptionist chats with patients
+      final snapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .where('role', isEqualTo: 'patient')
+          .get();
+      return snapshot.docs;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final currentUserId = FirebaseAuth.instance.currentUser?.uid;
-    if (currentUserId == null) return const Center(child: Text("Not logged in"));
+    if (currentUserId == null) {
+      return const Center(child: Text("Not logged in"));
+    }
 
-    // To list chats easily, we assume each user has a "chat_contacts" subcollection, 
-    // or we query users and start chats. For simplicity, we list doctors and receptionists they can chat with.
-    // Patients chat with approved Doctors & Receptionists. 
     return Scaffold(
       appBar: AppBar(title: const Text('Messages')),
-      body: FutureBuilder<QuerySnapshot>(
-        future: FirebaseFirestore.instance
-            .collection('users')
-            .where('role', whereIn: ['doctor', 'receptionist'])
-            .where('status', isEqualTo: 'approved')
-            .get(),
+      body: FutureBuilder<List<DocumentSnapshot>>(
+        future: _getUsersToChatWith(currentUserId),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
-          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return const Center(child: Text('No staff available to chat with.'));
+          if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          }
+          if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const Center(
+                child: Text('No users available to chat with.'));
           }
 
-          final staffList = snapshot.data!.docs;
+          final userList = snapshot.data!;
 
           return ListView.builder(
-            itemCount: staffList.length,
+            itemCount: userList.length,
             itemBuilder: (context, index) {
-              final staff = staffList[index].data() as Map<String, dynamic>;
+              final userData = userList[index].data() as Map<String, dynamic>;
+              final userRole = userData['role'] ?? 'Unknown';
+
+              IconData icon;
+              if (userRole == 'doctor') {
+                icon = Icons.medical_services;
+              } else if (userRole == 'receptionist') {
+                icon = Icons.support_agent;
+              } else {
+                icon = Icons.person;
+              }
+
               return ListTile(
                 leading: CircleAvatar(
                   backgroundColor: Colors.blueAccent,
-                  child: Icon(staff['role'] == 'doctor' ? Icons.medical_services : Icons.support_agent, color: Colors.white),
+                  child: Icon(icon, color: Colors.white),
                 ),
-                title: Text(staff['name'] ?? 'Unknown'),
-                subtitle: Text(staff['role'] == 'doctor' ? 'Doctor' : 'Receptionist'),
+                title: Text(userData['name'] ?? 'Unknown'),
+                subtitle: Text(userRole.toUpperCase()),
                 onTap: () {
                   context.push('/chat', extra: {
-                    'userId': staff['uid'],
-                    'userName': staff['name'],
+                    'userId': userData['uid'],
+                    'userName': userData['name'],
                   });
                 },
               );

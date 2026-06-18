@@ -1,32 +1,44 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/splash/splash_screen.dart';
+import '../../features/landing/landing_page.dart';
 import '../../features/role_selection/role_selection_screen.dart';
 import '../../features/auth/login_screen.dart';
 import '../../features/auth/register_screen.dart';
+import '../../features/auth/phone_login_screen.dart';
+import '../../features/auth/otp_verification_screen.dart';
 import '../../features/patient/patient_dashboard.dart';
 import '../../features/patient/book_appointment.dart';
 import '../../features/main_admin/main_admin_dashboard.dart';
 import '../../features/hospital_admin/hospital_admin_dashboard.dart';
 import '../../features/receptionist/receptionist_dashboard.dart';
+import '../../features/lab_technician/lab_dashboard.dart';
 import '../../features/doctor/doctor_dashboard.dart';
 import '../../features/doctor/prescription_screen.dart';
 import '../../features/chat/chat_screen.dart';
 import '../../features/chatbot/pre_login_chatbot_screen.dart';
 import '../../features/auth/email_verification_screen.dart';
-import '../../features/auth/phone_login_screen.dart';
-import '../../features/auth/otp_verification_screen.dart';
 import '../../features/auth/patient_profile_setup_screen.dart';
+import '../../features/auth/waiting_approval_screen.dart';
+import '../../features/patient/ai_symptoms_analyzer.dart';
+import '../../features/patient/patient_lab_reports_screen.dart';
 
 final goRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     initialLocation: '/splash',
     routes: [
       GoRoute(
+        path: '/waiting_approval',
+        builder: (context, state) => const WaitingApprovalScreen(),
+      ),
+      GoRoute(
         path: '/splash',
         builder: (context, state) => const SplashScreen(),
+      ),
+      GoRoute(
+        path: '/landing',
+        builder: (context, state) => const LandingPage(),
       ),
       GoRoute(
         path: '/chatbot',
@@ -57,8 +69,8 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) {
           final args = state.extra as Map<String, dynamic>;
           return OtpVerificationScreen(
-            verificationId: args['verificationId'],
-            phoneNumber: args['phoneNumber'],
+            verificationId: args['verificationId'] as String,
+            phoneNumber: args['phoneNumber'] as String,
           );
         },
       ),
@@ -73,6 +85,14 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/patient/book_appointment',
         builder: (context, state) => const BookAppointmentScreen(),
+      ),
+      GoRoute(
+        path: '/patient/ai_symptoms',
+        builder: (context, state) => const AISymptomsAnalyzerScreen(),
+      ),
+      GoRoute(
+        path: '/patient/lab_reports',
+        builder: (context, state) => const PatientLabReportsScreen(),
       ),
       GoRoute(
         path: '/main_admin/dashboard',
@@ -102,7 +122,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/lab/dashboard',
-        builder: (context, state) => const Scaffold(body: Center(child: Text('Lab Technician Dashboard'))),
+        builder: (context, state) => const LabTechnicianDashboard(),
       ),
       GoRoute(
         path: '/chat',

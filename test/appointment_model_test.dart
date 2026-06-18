@@ -4,7 +4,8 @@ import 'package:medicare_app/models/appointment_model.dart';
 
 void main() {
   group('AppointmentModel Serialization', () {
-    test('toMap() and fromMap() parse correctly preventing null exceptions', () {
+    test('toMap() and fromMap() parse correctly preventing null exceptions',
+        () {
       final map = {
         'patientId': 'p1',
         'patientName': 'John',

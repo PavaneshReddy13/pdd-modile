@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
+import 'core/theme/app_theme.dart';
 import 'core/routes/app_router.dart';
 import 'firebase_options.dart';
 
@@ -53,14 +55,37 @@ class MediCareApp extends ConsumerWidget {
     final goRouter = ref.watch(goRouterProvider);
 
     return MaterialApp.router(
-      title: 'MediCare',
+      title: 'CareFlow',
       debugShowCheckedModeBanner: false,
       routerConfig: goRouter,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF1D9E75),
+      theme: AppTheme.darkTheme,
+      builder: (context, child) => ResponsiveBreakpoints.builder(
+        child: Builder(
+          builder: (innerContext) {
+            return Container(
+              color: const Color(0xFF050B0B), // AppTheme.background
+              child: BouncingScrollWrapper.builder(
+                innerContext,
+                MaxWidthBox(
+                  maxWidth: 1200,
+                  child: ResponsiveScaledBox(
+                    width: ResponsiveValue<double?>(innerContext,
+                        conditionalValues: [
+                          Condition.equals(name: MOBILE, value: 450),
+                        ]).value,
+                    child: child!,
+                  ),
+                ),
+              ),
+            );
+          },
         ),
-        useMaterial3: true,
+        breakpoints: [
+          const Breakpoint(start: 0, end: 450, name: MOBILE),
+          const Breakpoint(start: 451, end: 800, name: TABLET),
+          const Breakpoint(start: 801, end: 1920, name: DESKTOP),
+          const Breakpoint(start: 1921, end: double.infinity, name: '4K'),
+        ],
       ),
     );
   }

@@ -67,7 +67,7 @@ def generate_mobile_screenshot(test_id, category, screen, test_name, expected, a
 
         # Button
         btn_color = '#00D2C4' if highlight == 'Action Button' else '#0F766E'
-        draw.rectangle([60, 480, 340, 525], fill=btn_color, radius=6)
+        draw.rounded_rectangle([60, 480, 340, 525], fill=btn_color, radius=6)
         draw.text((150, 497), "SUBMIT", fill='#000000')
 
     else:
@@ -325,7 +325,7 @@ def generate_excel_report():
         # Screenshot link
         link_cell = sheet.cell(row=current_row, column=11, value="View Mobile Visual Check")
         link_cell.hyperlink = res['screenshot']
-        link_cell.font = Font(color="2563EB", underline=True)
+        link_cell.font = Font(color="2563EB", underline="single")
         link_cell.alignment = Alignment(horizontal="center")
         
         current_row += 1

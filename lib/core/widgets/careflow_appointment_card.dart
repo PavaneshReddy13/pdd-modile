@@ -48,7 +48,7 @@ class CareFlowAppointmentCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               CareFlowStatusChip(status: status),
-              if (tokenNumber != null)
+              if (tokenNumber != null && tokenNumber! > 0)
                 Container(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 4),

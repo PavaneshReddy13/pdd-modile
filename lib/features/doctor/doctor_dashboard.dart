@@ -385,7 +385,7 @@ class _DoctorDashboardState extends ConsumerState<DoctorDashboard>
                   status: 'completed',
                 ),
                 Positioned(
-                  top: 18,
+                  top: 60,
                   right: 18,
                   child: IconButton(
                     icon:

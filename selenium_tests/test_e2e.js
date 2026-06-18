@@ -1,5 +1,6 @@
 const { Builder, By, until } = require('selenium-webdriver');
 const chrome = require('selenium-webdriver/chrome');
+require('chromedriver');
 const ExcelJS = require('exceljs');
 const fs = require('fs');
 
@@ -21,6 +22,8 @@ async function runTests() {
     let options = new chrome.Options();
     if (process.env.CI) {
         options.addArguments('--headless'); // Headless mode for CI
+        options.addArguments('--no-sandbox'); // Required for Linux CI
+        options.addArguments('--disable-dev-shm-usage'); // Required for Linux CI
     }
     options.addArguments('--window-size=1280,800');
     options.addArguments('--log-level=3'); // Suppress browser warnings

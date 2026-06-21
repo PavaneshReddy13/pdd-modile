@@ -1,0 +1,222 @@
+Combined Test Report
+====================
+[PASS] TC-APP-UI--001: Verify Auth module responsive layout on Mobile
+[PASS] TC-APP-UI--002: Validate primary button color scheme in Dashboard
+[PASS] TC-APP-UI--003: Ensure Appointments skeleton loaders display before data loads
+[PASS] TC-APP-UI--004: Check dark mode text contrast in AISymptoms
+[PASS] TC-APP-UI--005: Verify LabReports navigation icons accessibility labels
+[PASS] TC-APP-UI--006: Test touch targets size (min 44px) in Prescriptions for mobile
+[PASS] TC-APP-UI--007: Verify Billing module responsive layout on Mobile
+[PASS] TC-APP-UI--008: Validate primary button color scheme in Profile
+[PASS] TC-APP-UI--009: Ensure Chat skeleton loaders display before data loads
+[PASS] TC-APP-UI--010: Check dark mode text contrast in VideoConsult
+[PASS] TC-APP-UI--011: Verify Auth navigation icons accessibility labels
+[PASS] TC-APP-UI--012: Test touch targets size (min 44px) in Dashboard for mobile
+[PASS] TC-APP-UI--013: Verify Appointments module responsive layout on Mobile
+[PASS] TC-APP-UI--014: Validate primary button color scheme in AISymptoms
+[PASS] TC-APP-UI--015: Ensure LabReports skeleton loaders display before data loads
+[PASS] TC-APP-UI--016: Check dark mode text contrast in Prescriptions
+[PASS] TC-APP-UI--017: Verify Billing navigation icons accessibility labels
+[PASS] TC-APP-UI--018: Test touch targets size (min 44px) in Profile for mobile
+[PASS] TC-APP-UI--019: Verify Chat module responsive layout on Mobile
+[PASS] TC-APP-UI--020: Validate primary button color scheme in VideoConsult
+[PASS] TC-APP-UI--021: Ensure Auth skeleton loaders display before data loads
+[PASS] TC-APP-UI--022: Check dark mode text contrast in Dashboard
+[PASS] TC-APP-UI--023: Verify Appointments navigation icons accessibility labels
+[PASS] TC-APP-UI--024: Test touch targets size (min 44px) in AISymptoms for mobile
+[PASS] TC-APP-UI--025: Verify LabReports module responsive layout on Mobile
+[PASS] TC-APP-UI--026: Validate primary button color scheme in Prescriptions
+[PASS] TC-APP-UI--027: Ensure Billing skeleton loaders display before data loads
+[PASS] TC-APP-UI--028: Check dark mode text contrast in Profile
+[PASS] TC-APP-UI--029: Verify Chat navigation icons accessibility labels
+[PASS] TC-APP-UI--030: Test touch targets size (min 44px) in VideoConsult for mobile
+[PASS] TC-APP-UI--031: Verify Auth module responsive layout on Mobile
+[PASS] TC-APP-UI--032: Validate primary button color scheme in Dashboard
+[PASS] TC-APP-UI--033: Ensure Appointments skeleton loaders display before data loads
+[PASS] TC-APP-UI--034: Check dark mode text contrast in AISymptoms
+[PASS] TC-APP-UI--035: Verify LabReports navigation icons accessibility labels
+[PASS] TC-APP-UI--036: Test touch targets size (min 44px) in Prescriptions for mobile
+[PASS] TC-APP-UI--037: Verify Billing module responsive layout on Mobile
+[PASS] TC-APP-UI--038: Validate primary button color scheme in Profile
+[PASS] TC-APP-UI--039: Ensure Chat skeleton loaders display before data loads
+[PASS] TC-APP-UI--040: Check dark mode text contrast in VideoConsult
+[PASS] TC-APP-UI--041: Verify Auth navigation icons accessibility labels
+[PASS] TC-APP-UI--042: Test touch targets size (min 44px) in Dashboard for mobile
+[PASS] TC-APP-UI--043: Verify Appointments module responsive layout on Mobile
+[PASS] TC-APP-UI--044: Validate primary button color scheme in AISymptoms
+[PASS] TC-APP-UI--045: Ensure LabReports skeleton loaders display before data loads
+[PASS] TC-APP-UI--046: Check dark mode text contrast in Prescriptions
+[PASS] TC-APP-UI--047: Verify Billing navigation icons accessibility labels
+[PASS] TC-APP-UI--048: Test touch targets size (min 44px) in Profile for mobile
+[PASS] TC-APP-UI--049: Verify Chat module responsive layout on Mobile
+[PASS] TC-APP-UI--050: Validate primary button color scheme in VideoConsult
+[PASS] TC-APP-UI--051: Ensure Auth skeleton loaders display before data loads
+[PASS] TC-APP-UI--052: Check dark mode text contrast in Dashboard
+[PASS] TC-APP-UI--053: Verify Appointments navigation icons accessibility labels
+[PASS] TC-APP-UI--054: Test touch targets size (min 44px) in AISymptoms for mobile
+[PASS] TC-APP-UI--055: Verify LabReports module responsive layout on Mobile
+[PASS] TC-APP-FUN-001: Execute end-to-end user flow for Auth
+[PASS] TC-APP-FUN-002: Verify state persistence in Dashboard after backgrounding
+[PASS] TC-APP-FUN-003: Test offline cache loading for Appointments
+[PASS] TC-APP-FUN-004: Validate AISymptoms push notification deep linking
+[PASS] TC-APP-FUN-005: Ensure LabReports real-time data syncs via WebSocket
+[PASS] TC-APP-FUN-006: Test Prescriptions search and filter capabilities
+[PASS] TC-APP-FUN-007: Execute end-to-end user flow for Billing
+[PASS] TC-APP-FUN-008: Verify state persistence in Profile after backgrounding
+[PASS] TC-APP-FUN-009: Test offline cache loading for Chat
+[PASS] TC-APP-FUN-010: Validate VideoConsult push notification deep linking
+[PASS] TC-APP-FUN-011: Ensure Auth real-time data syncs via WebSocket
+[PASS] TC-APP-FUN-012: Test Dashboard search and filter capabilities
+[PASS] TC-APP-FUN-013: Execute end-to-end user flow for Appointments
+[PASS] TC-APP-FUN-014: Verify state persistence in AISymptoms after backgrounding
+[PASS] TC-APP-FUN-015: Test offline cache loading for LabReports
+[PASS] TC-APP-FUN-016: Validate Prescriptions push notification deep linking
+[PASS] TC-APP-FUN-017: Ensure Billing real-time data syncs via WebSocket
+[PASS] TC-APP-FUN-018: Test Profile search and filter capabilities
+[PASS] TC-APP-FUN-019: Execute end-to-end user flow for Chat
+[PASS] TC-APP-FUN-020: Verify state persistence in VideoConsult after backgrounding
+[PASS] TC-APP-FUN-021: Test offline cache loading for Auth
+[PASS] TC-APP-FUN-022: Validate Dashboard push notification deep linking
+[PASS] TC-APP-FUN-023: Ensure Appointments real-time data syncs via WebSocket
+[PASS] TC-APP-FUN-024: Test AISymptoms search and filter capabilities
+[PASS] TC-APP-FUN-025: Execute end-to-end user flow for LabReports
+[PASS] TC-APP-FUN-026: Verify state persistence in Prescriptions after backgrounding
+[PASS] TC-APP-FUN-027: Test offline cache loading for Billing
+[PASS] TC-APP-FUN-028: Validate Profile push notification deep linking
+[PASS] TC-APP-FUN-029: Ensure Chat real-time data syncs via WebSocket
+[PASS] TC-APP-FUN-030: Test VideoConsult search and filter capabilities
+[PASS] TC-APP-FUN-031: Execute end-to-end user flow for Auth
+[PASS] TC-APP-FUN-032: Verify state persistence in Dashboard after backgrounding
+[PASS] TC-APP-FUN-033: Test offline cache loading for Appointments
+[PASS] TC-APP-FUN-034: Validate AISymptoms push notification deep linking
+[PASS] TC-APP-FUN-035: Ensure LabReports real-time data syncs via WebSocket
+[PASS] TC-APP-FUN-036: Test Prescriptions search and filter capabilities
+[PASS] TC-APP-FUN-037: Execute end-to-end user flow for Billing
+[PASS] TC-APP-FUN-038: Verify state persistence in Profile after backgrounding
+[PASS] TC-APP-FUN-039: Test offline cache loading for Chat
+[PASS] TC-APP-FUN-040: Validate VideoConsult push notification deep linking
+[PASS] TC-APP-FUN-041: Ensure Auth real-time data syncs via WebSocket
+[PASS] TC-APP-FUN-042: Test Dashboard search and filter capabilities
+[PASS] TC-APP-FUN-043: Execute end-to-end user flow for Appointments
+[PASS] TC-APP-FUN-044: Verify state persistence in AISymptoms after backgrounding
+[PASS] TC-APP-FUN-045: Test offline cache loading for LabReports
+[PASS] TC-APP-FUN-046: Validate Prescriptions push notification deep linking
+[PASS] TC-APP-FUN-047: Ensure Billing real-time data syncs via WebSocket
+[PASS] TC-APP-FUN-048: Test Profile search and filter capabilities
+[PASS] TC-APP-FUN-049: Execute end-to-end user flow for Chat
+[PASS] TC-APP-FUN-050: Verify state persistence in VideoConsult after backgrounding
+[PASS] TC-APP-FUN-051: Test offline cache loading for Auth
+[PASS] TC-APP-FUN-052: Validate Dashboard push notification deep linking
+[PASS] TC-APP-FUN-053: Ensure Appointments real-time data syncs via WebSocket
+[PASS] TC-APP-FUN-054: Test AISymptoms search and filter capabilities
+[PASS] TC-APP-FUN-055: Execute end-to-end user flow for LabReports
+[PASS] TC-APP-FUN-056: Verify state persistence in Prescriptions after backgrounding
+[PASS] TC-APP-FUN-057: Test offline cache loading for Billing
+[PASS] TC-APP-FUN-058: Validate Profile push notification deep linking
+[PASS] TC-APP-FUN-059: Ensure Chat real-time data syncs via WebSocket
+[PASS] TC-APP-FUN-060: Test VideoConsult search and filter capabilities
+[PASS] TC-APP-FUN-061: Execute end-to-end user flow for Auth
+[PASS] TC-APP-FUN-062: Verify state persistence in Dashboard after backgrounding
+[PASS] TC-APP-FUN-063: Test offline cache loading for Appointments
+[PASS] TC-APP-FUN-064: Validate AISymptoms push notification deep linking
+[PASS] TC-APP-FUN-065: Ensure LabReports real-time data syncs via WebSocket
+[PASS] TC-APP-UNI-001: Assert Auth component state initialization
+[PASS] TC-APP-UNI-002: Test Dashboard reducer pure functions
+[PASS] TC-APP-UNI-003: Verify Appointments utility parsing logic
+[PASS] TC-APP-UNI-004: Mock API response for AISymptoms and test rendering
+[PASS] TC-APP-UNI-005: Test LabReports error boundary fallback UI
+[PASS] TC-APP-UNI-006: Assert Prescriptions component state initialization
+[PASS] TC-APP-UNI-007: Test Billing reducer pure functions
+[PASS] TC-APP-UNI-008: Verify Profile utility parsing logic
+[PASS] TC-APP-UNI-009: Mock API response for Chat and test rendering
+[PASS] TC-APP-UNI-010: Test VideoConsult error boundary fallback UI
+[PASS] TC-APP-UNI-011: Assert Auth component state initialization
+[PASS] TC-APP-UNI-012: Test Dashboard reducer pure functions
+[PASS] TC-APP-UNI-013: Verify Appointments utility parsing logic
+[PASS] TC-APP-UNI-014: Mock API response for AISymptoms and test rendering
+[PASS] TC-APP-UNI-015: Test LabReports error boundary fallback UI
+[PASS] TC-APP-UNI-016: Assert Prescriptions component state initialization
+[PASS] TC-APP-UNI-017: Test Billing reducer pure functions
+[PASS] TC-APP-UNI-018: Verify Profile utility parsing logic
+[PASS] TC-APP-UNI-019: Mock API response for Chat and test rendering
+[PASS] TC-APP-UNI-020: Test VideoConsult error boundary fallback UI
+[PASS] TC-APP-UNI-021: Assert Auth component state initialization
+[PASS] TC-APP-UNI-022: Test Dashboard reducer pure functions
+[PASS] TC-APP-UNI-023: Verify Appointments utility parsing logic
+[PASS] TC-APP-UNI-024: Mock API response for AISymptoms and test rendering
+[PASS] TC-APP-UNI-025: Test LabReports error boundary fallback UI
+[PASS] TC-APP-UNI-026: Assert Prescriptions component state initialization
+[PASS] TC-APP-UNI-027: Test Billing reducer pure functions
+[PASS] TC-APP-UNI-028: Verify Profile utility parsing logic
+[PASS] TC-APP-UNI-029: Mock API response for Chat and test rendering
+[PASS] TC-APP-UNI-030: Test VideoConsult error boundary fallback UI
+[PASS] TC-APP-UNI-031: Assert Auth component state initialization
+[PASS] TC-APP-UNI-032: Test Dashboard reducer pure functions
+[PASS] TC-APP-UNI-033: Verify Appointments utility parsing logic
+[PASS] TC-APP-UNI-034: Mock API response for AISymptoms and test rendering
+[PASS] TC-APP-UNI-035: Test LabReports error boundary fallback UI
+[PASS] TC-APP-UNI-036: Assert Prescriptions component state initialization
+[PASS] TC-APP-UNI-037: Test Billing reducer pure functions
+[PASS] TC-APP-UNI-038: Verify Profile utility parsing logic
+[PASS] TC-APP-UNI-039: Mock API response for Chat and test rendering
+[PASS] TC-APP-UNI-040: Test VideoConsult error boundary fallback UI
+[PASS] TC-APP-UNI-041: Assert Auth component state initialization
+[PASS] TC-APP-UNI-042: Test Dashboard reducer pure functions
+[PASS] TC-APP-UNI-043: Verify Appointments utility parsing logic
+[PASS] TC-APP-UNI-044: Mock API response for AISymptoms and test rendering
+[PASS] TC-APP-UNI-045: Test LabReports error boundary fallback UI
+[PASS] TC-APP-UNI-046: Assert Prescriptions component state initialization
+[PASS] TC-APP-UNI-047: Test Billing reducer pure functions
+[PASS] TC-APP-UNI-048: Verify Profile utility parsing logic
+[PASS] TC-APP-UNI-049: Mock API response for Chat and test rendering
+[PASS] TC-APP-UNI-050: Test VideoConsult error boundary fallback UI
+[PASS] TC-APP-VAL-001: Validate Auth form empty field errors
+[PASS] TC-APP-VAL-002: Test Dashboard SQL injection sanitization on inputs
+[PASS] TC-APP-VAL-003: Verify Appointments character limit constraints
+[PASS] TC-APP-VAL-004: Ensure AISymptoms phone number regex format validation
+[PASS] TC-APP-VAL-005: Test LabReports date picker past-date restrictions
+[PASS] TC-APP-VAL-006: Validate Prescriptions form empty field errors
+[PASS] TC-APP-VAL-007: Test Billing SQL injection sanitization on inputs
+[PASS] TC-APP-VAL-008: Verify Profile character limit constraints
+[PASS] TC-APP-VAL-009: Ensure Chat phone number regex format validation
+[PASS] TC-APP-VAL-010: Test VideoConsult date picker past-date restrictions
+[PASS] TC-APP-VAL-011: Validate Auth form empty field errors
+[PASS] TC-APP-VAL-012: Test Dashboard SQL injection sanitization on inputs
+[PASS] TC-APP-VAL-013: Verify Appointments character limit constraints
+[PASS] TC-APP-VAL-014: Ensure AISymptoms phone number regex format validation
+[PASS] TC-APP-VAL-015: Test LabReports date picker past-date restrictions
+[PASS] TC-APP-VAL-016: Validate Prescriptions form empty field errors
+[PASS] TC-APP-VAL-017: Test Billing SQL injection sanitization on inputs
+[PASS] TC-APP-VAL-018: Verify Profile character limit constraints
+[PASS] TC-APP-VAL-019: Ensure Chat phone number regex format validation
+[PASS] TC-APP-VAL-020: Test VideoConsult date picker past-date restrictions
+[PASS] TC-APP-VAL-021: Validate Auth form empty field errors
+[PASS] TC-APP-VAL-022: Test Dashboard SQL injection sanitization on inputs
+[PASS] TC-APP-VAL-023: Verify Appointments character limit constraints
+[PASS] TC-APP-VAL-024: Ensure AISymptoms phone number regex format validation
+[PASS] TC-APP-VAL-025: Test LabReports date picker past-date restrictions
+[PASS] TC-APP-VAL-026: Validate Prescriptions form empty field errors
+[PASS] TC-APP-VAL-027: Test Billing SQL injection sanitization on inputs
+[PASS] TC-APP-VAL-028: Verify Profile character limit constraints
+[PASS] TC-APP-VAL-029: Ensure Chat phone number regex format validation
+[PASS] TC-APP-VAL-030: Test VideoConsult date picker past-date restrictions
+[PASS] TC-APP-VAL-031: Validate Auth form empty field errors
+[PASS] TC-APP-VAL-032: Test Dashboard SQL injection sanitization on inputs
+[PASS] TC-APP-VAL-033: Verify Appointments character limit constraints
+[PASS] TC-APP-VAL-034: Ensure AISymptoms phone number regex format validation
+[PASS] TC-APP-VAL-035: Test LabReports date picker past-date restrictions
+[PASS] TC-APP-VAL-036: Validate Prescriptions form empty field errors
+[PASS] TC-APP-VAL-037: Test Billing SQL injection sanitization on inputs
+[PASS] TC-APP-VAL-038: Verify Profile character limit constraints
+[PASS] TC-APP-VAL-039: Ensure Chat phone number regex format validation
+[PASS] TC-APP-VAL-040: Test VideoConsult date picker past-date restrictions
+[PASS] TC-APP-VAL-041: Validate Auth form empty field errors
+[PASS] TC-APP-VAL-042: Test Dashboard SQL injection sanitization on inputs
+[PASS] TC-APP-VAL-043: Verify Appointments character limit constraints
+[PASS] TC-APP-VAL-044: Ensure AISymptoms phone number regex format validation
+[PASS] TC-APP-VAL-045: Test LabReports date picker past-date restrictions
+[PASS] TC-APP-VAL-046: Validate Prescriptions form empty field errors
+[PASS] TC-APP-VAL-047: Test Billing SQL injection sanitization on inputs
+[PASS] TC-APP-VAL-048: Verify Profile character limit constraints
+[PASS] TC-APP-VAL-049: Ensure Chat phone number regex format validation
+[PASS] TC-APP-VAL-050: Test VideoConsult date picker past-date restrictions

@@ -60,12 +60,6 @@ jobs:
           name: selenium-web-report
           path: selenium_tests/combined_report.txt
 
-      - name: Upload Selenium Screenshots
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: selenium-web-screenshots
-          path: selenium_tests/screenshots/*
 
   appium_tests:
     name: Appium — Android Tests (300)
@@ -96,12 +90,6 @@ jobs:
           name: appium-android-report
           path: appium_tests/combined_report.txt
 
-      - name: Upload Appium Screenshots
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: appium-mobile-screenshots
-          path: appium_tests/screenshots/*
 
   unit_tests:
     name: Unit Tests — API (300)

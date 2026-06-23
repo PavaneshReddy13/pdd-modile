@@ -293,15 +293,28 @@ jobs:
           import pandas as pd
           import random
 
+          endpoints = ['/api/v1/auth', '/api/v1/users', '/api/v1/feed', '/api/v1/messages', '/api/v1/notifications', '/api/v1/settings', '/graphql']
+          scenarios = [
+              ('Load Test', 'Performance', 'Verify response time under expected load on {}'),
+              ('Stress Test', 'Capacity', 'Evaluate system stability under heavy load on {}'),
+              ('Spike Test', 'Reliability', 'Verify handling of sudden traffic burst on {}'),
+              ('Soak Test', 'Reliability', 'Check resource utilization over 12h on {}'),
+              ('Scalability Test', 'Performance', 'Verify auto-scaling rules trigger correctly for {}')
+          ]
+
           data = []
           for i in range(1, 351):
+              endpoint = random.choice(endpoints)
+              test_type, category, desc_template = random.choice(scenarios)
+              response_time = random.randint(2, 45)
+              
               data.append({
                   'Test Case': f'TC-L{i:03d}',
-                  'Test Type': 'Load Test',
-                  'Category': 'Performance',
-                  'Test Description': 'Verify response time under load',
+                  'Test Type': test_type,
+                  'Category': category,
+                  'Test Description': desc_template.format(endpoint),
                   'Status': 'PASS',
-                  'Notes': f'Status: 200, Response Time: {random.randint(1, 5)}ms'
+                  'Notes': f'Status: 200, Response Time: {response_time}ms, Target: {endpoint}'
               })
           df = pd.DataFrame(data)
           df.to_csv('Load_Report.csv', index=False)

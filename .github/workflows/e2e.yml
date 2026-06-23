@@ -57,7 +57,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: raw-selenium-data
+          name: selenium-web-report
           path: selenium_tests/combined_report.txt
 
 
@@ -87,7 +87,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: raw-appium-data
+          name: appium-android-report
           path: appium_tests/combined_report.txt
 
 
@@ -108,7 +108,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: raw-unit-data
+          name: unit-test-report
           path: combined_report.txt
 
   validation_tests:
@@ -128,7 +128,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: raw-validation-data
+          name: validation-test-report
           path: combined_report.txt
 
   deployment_status:
@@ -148,7 +148,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: raw-deployment-data
+          name: deployment-test-report
           path: combined_report.txt
 
   load_testing:
@@ -168,7 +168,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: raw-load-data
+          name: load-test-report
           path: combined_report.txt
 
   compile_report:
@@ -190,42 +190,42 @@ jobs:
       - name: Download Selenium Reports
         uses: actions/download-artifact@v4
         with:
-          name: raw-selenium-data
+          name: selenium-web-report
           path: reports/selenium
         continue-on-error: true
 
       - name: Download Appium Reports
         uses: actions/download-artifact@v4
         with:
-          name: raw-appium-data
+          name: appium-android-report
           path: reports/appium
         continue-on-error: true
 
       - name: Download Unit Test Reports
         uses: actions/download-artifact@v4
         with:
-          name: raw-unit-data
+          name: unit-test-report
           path: reports/unit
         continue-on-error: true
 
       - name: Download Validation Reports
         uses: actions/download-artifact@v4
         with:
-          name: raw-validation-data
+          name: validation-test-report
           path: reports/validation
         continue-on-error: true
 
       - name: Download Deployment Reports
         uses: actions/download-artifact@v4
         with:
-          name: raw-deployment-data
+          name: deployment-test-report
           path: reports/deployment
         continue-on-error: true
 
       - name: Download Load Testing Reports
         uses: actions/download-artifact@v4
         with:
-          name: raw-load-data
+          name: load-test-report
           path: reports/load
         continue-on-error: true
 
@@ -237,65 +237,25 @@ jobs:
       - name: Install dependencies
         run: pip install pandas openpyxl
 
-      - name: Generate Reports in Excel
+      - name: Generate Full E2E Report in Excel
         run: |
-          echo "Generating Excel Reports..."
-          mkdir -p master_report individual_reports
+          echo "Generating Full E2E Master Report in Excel..."
+          mkdir -p master_report
           python -c "
           import os, glob, pandas as pd, re
           all_data = []
           for f in glob.glob('reports/*/*.txt'):
               category = f.split('/')[1] if '/' in f else 'Unknown'
-              cat_data = []
               with open(f, 'r', encoding='utf-8') as file:
                   for line in file:
                       match = re.match(r'^\[(.*?)\]\s+(.*?):\s+(.*)$', line.strip())
                       if match:
-                          row = {'Category': category.capitalize(), 'Status': match.group(1), 'Test ID': match.group(2), 'Test Name': match.group(3)}
-                          cat_data.append(row)
-                          all_data.append(row)
-              if cat_data:
-                  pd.DataFrame(cat_data).to_excel(f'individual_reports/{category}-report.xlsx', index=False)
+                          all_data.append({'Category': category.capitalize(), 'Status': match.group(1), 'Test ID': match.group(2), 'Test Name': match.group(3)})
           if not all_data:
               all_data.append({'Category': 'None', 'Status': 'N/A', 'Test ID': 'N/A', 'Test Name': 'No test results found'})
-          pd.DataFrame(all_data).to_excel('master_report/test reports web+app.xlsx', index=False)
+          df = pd.DataFrame(all_data)
+          df.to_excel('master_report/test reports web+app.xlsx', index=False)
           "
-          
-      - name: Upload Selenium Excel
-        uses: actions/upload-artifact@v4
-        with:
-          name: selenium-web-report
-          path: individual_reports/selenium-report.xlsx
-
-      - name: Upload Appium Excel
-        uses: actions/upload-artifact@v4
-        with:
-          name: appium-android-report
-          path: individual_reports/appium-report.xlsx
-
-      - name: Upload Unit Excel
-        uses: actions/upload-artifact@v4
-        with:
-          name: unit-test-report
-          path: individual_reports/unit-report.xlsx
-
-      - name: Upload Validation Excel
-        uses: actions/upload-artifact@v4
-        with:
-          name: validation-test-report
-          path: individual_reports/validation-report.xlsx
-
-      - name: Upload Deployment Excel
-        uses: actions/upload-artifact@v4
-        with:
-          name: deployment-test-report
-          path: individual_reports/deployment-report.xlsx
-
-      - name: Upload Load Excel
-        uses: actions/upload-artifact@v4
-        with:
-          name: load-test-report
-          path: individual_reports/load-report.xlsx
 
       - name: Upload Full E2E Report
         uses: actions/upload-artifact@v4
